@@ -127,7 +127,37 @@ class HybridChatAgent:
             'missing_values': {}
         }
         out = self.export_manager.export_complete_analysis(series, results, data_info, output_dir="output/ts")
-        return {"summary": self.get_analysis_summary({(series.name or 'value'): results}), "outputs": out}
+
+        # Anomaly visualization using Prophet results, if available
+        anomalies_path = None
+        pa = results.get('prophet_anomalies')
+        if isinstance(pa, dict) and 'anomalies' in pa and 'forecast' in pa:
+            anomalies_df = pa['anomalies']
+            if hasattr(anomalies_df, 'empty') and not anomalies_df.empty:
+                try:
+                    os.makedirs('output/ts', exist_ok=True)
+                    viz = TimeSeriesVisualizer()
+                    fig = viz.plot_prophet_anomalies(series, anomalies_df, pa['forecast'])
+                    base = os.path.splitext(os.path.basename(csv_path))[0]
+                    anomalies_path = os.path.join('output/ts', f'prophet_anomalies_{base}.html')
+                    fig.write_html(anomalies_path)
+                    out['prophet_anomalies_html'] = anomalies_path
+                except Exception:
+                    pass
+
+        # Build summary including anomaly count if present
+        summary = self.get_analysis_summary({(series.name or 'value'): results})
+        if isinstance(pa, dict) and 'anomalies' in pa:
+            try:
+                count = int(len(pa['anomalies']))
+                extra = f"\nAnomalies detected (Prophet): {count}"
+                if anomalies_path:
+                    extra += f"\nAnomaly chart: {anomalies_path}"
+                summary = summary + extra
+            except Exception:
+                pass
+
+        return {"summary": summary, "outputs": out}
     
     def _load_data_node(self, state: AgentState) -> AgentState:
         """Load and validate data"""
@@ -358,6 +388,14 @@ class HybridChatAgent:
                 forecast_available = True
                 
             summary_parts.append(f"Forecasting: {'Available' if forecast_available else 'Not available'}")
+            # Anomalies info
+            if "prophet_anomalies" in results and isinstance(results["prophet_anomalies"], dict):
+                try:
+                    anomalies_df = results["prophet_anomalies"].get("anomalies")
+                    count = int(len(anomalies_df)) if anomalies_df is not None else 0
+                    summary_parts.append(f"Prophet anomalies: {count}")
+                except Exception:
+                    pass
         
         return "\n".join(summary_parts)
 

@@ -1,0 +1,41 @@
+{
+  "metadata": {
+    "generated_at": "2025-10-15T21:20:21.142460",
+    "data_source": "CSV Analysis",
+    "total_records": 214152
+  },
+  "data_overview": {
+    "time_range": {
+      "start": "2000-01-01 00:00:00+00:00",
+      "end": "2024-06-05 23:00:00+00:00"
+    },
+    "time_span_days": 8922,
+    "numeric_columns": [
+      "temperature"
+    ],
+    "categorical_columns": [],
+    "missing_values": {}
+  },
+  "analysis_summary": {
+    "trend": {
+      "direction": "increasing",
+      "strength": 0.002,
+      "slope": 7e-06
+    },
+    "seasonality": {
+      "detected": false,
+      "period": null,
+      "strength": 0
+    },
+    "stationarity": {
+      "is_stationary": "True",
+      "adf_p_value": 0.0,
+      "kpss_p_value": 0.1
+    }
+  },
+  "recommendations": [
+    "Upward trend detected. Monitor for continued growth.",
+    "ARIMA model successfully fitted. Use for short-term forecasting.",
+    "Exponential smoothing model available. Good for trend-based forecasting."
+  ]
+}

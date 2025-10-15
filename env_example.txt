@@ -1,0 +1,9 @@
+# Environment Variables
+# Copy this file to .env and fill in your API keys
+
+# Groq API Key (for AI-powered features)
+GROQ_API_KEY=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
+
+# Other API keys (if needed for additional features)
+# ANTHROPIC_API_KEY=your-anthropic-key-here
+# GOOGLE_API_KEY=your-google-key-here

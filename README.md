@@ -1,19 +1,23 @@
 # Time Series Analysis Agent
 
-A comprehensive Python application that uses LangGraph and AI agents to automatically analyze CSV data for time series patterns. The agent intelligently detects data types, performs trend analysis, seasonality detection, and forecasting.
+
+A comprehensive Python application that uses LangGraph and AI agents to automatically analyze CSV data for time series patterns. The agent intelligently detects data types, performs trend analysis, seasonality detection, and forecasting. Now includes a **Streamlit web interface** for easy interaction!
 
 ## Features
 
 - **🤖 AI-Powered Agent**: Built with LangGraph for intelligent workflow orchestration
+- **🌐 Web Interface**: Beautiful Streamlit UI for chatting, file uploads, and visualization
 - **🔍 Automatic Data Detection**: Automatically identifies time columns, numeric data, and categorical variables
 - **📈 Comprehensive Analysis**: 
   - Trend analysis with moving averages and linear regression
   - Seasonality detection with seasonal decomposition
   - Stationarity testing (ADF and KPSS tests)
   - Forecasting with ARIMA and Exponential Smoothing models
+  - **🔍 Anomaly Detection**: Prophet-based anomaly detection with visualizations
 - **📊 Interactive Visualizations**: Plotly-based charts and dashboards
 - **📋 Detailed Reports**: HTML and JSON reports with analysis summaries
-- **🎯 Multiple Interfaces**: Command-line and interactive modes
+- **🎯 Multiple Interfaces**: Web UI, command-line, and interactive modes
+- **📁 File Management**: Upload CSV/PDF files for RAG and time series analysis
 
 ## Installation
 
@@ -29,6 +33,21 @@ export GROQ_API_KEY='your-api-key-here'
 ```
 
 ## Usage
+
+### 🌐 Web Interface (Recommended)
+```bash
+# Start the Streamlit web app
+python run_app.py
+
+# Or directly with streamlit
+streamlit run streamlit_app.py
+```
+
+The web interface provides:
+- **💬 Chat Interface**: Ask questions about your data or request time series analysis
+- **📁 File Upload**: Upload CSV/PDF files for analysis and RAG
+- **📊 Live Visualizations**: View interactive plots and anomaly detection charts
+- **⚡ Quick Actions**: One-click analysis of common files
 
 ### Interactive Mode
 ```bash
@@ -68,11 +87,14 @@ if results["success"]:
 time-series-tool/
 ├── main.py                 # Main application entry point
 ├── ts_agent.py            # LangGraph agent implementation
+├── streamlit_app.py       # Streamlit web interface
+├── run_app.py             # Streamlit launcher script
 ├── data_detector.py       # Automatic data type detection
 ├── time_series_tools.py  # Time series analysis algorithms
 ├── reporting.py           # Report generation and visualization
 ├── requirements.txt       # Python dependencies
-└── commit_history.csv     # Sample data file
+├── commit_history.csv     # Sample data file
+└── db/                    # Directory for uploaded files (PDF, CSV)
 ```
 
 ## How It Works
@@ -120,13 +142,16 @@ The included `commit_history.csv` demonstrates the agent's capabilities:
 
 - **LangGraph**: Agent workflow orchestration
 - **LangChain**: LLM integration and tools
+- **Streamlit**: Web interface framework
 - **Pandas**: Data manipulation and analysis
 - **NumPy**: Numerical computations
 - **Matplotlib/Seaborn**: Static visualizations
 - **Plotly**: Interactive visualizations
 - **Statsmodels**: Statistical models and tests
 - **Scikit-learn**: Machine learning utilities
-- **Prophet**: Advanced forecasting (optional)
+- **Prophet**: Advanced forecasting and anomaly detection
+- **ChromaDB**: Vector database for RAG
+- **Sentence Transformers**: Embeddings for document search
 
 ## Troubleshooting
 

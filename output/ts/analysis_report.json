@@ -1,17 +1,17 @@
 {
   "metadata": {
-    "generated_at": "2025-10-16T01:01:56.796711",
+    "generated_at": "2025-10-16T11:44:25.914442",
     "data_source": "CSV Analysis",
-    "total_records": 214152
+    "total_records": 4167
   },
   "data_overview": {
     "time_range": {
-      "start": "2000-01-01 00:00:00+00:00",
-      "end": "2024-06-05 23:00:00+00:00"
+      "start": "2016-10-19 00:00:00+00:00",
+      "end": "2023-09-05 00:00:00+00:00"
     },
-    "time_span_days": 8922,
+    "time_span_days": 2512,
     "numeric_columns": [
-      "temperature"
+      "value"
     ],
     "categorical_columns": [],
     "missing_values": {}
@@ -19,22 +19,23 @@
   "analysis_summary": {
     "trend": {
       "direction": "increasing",
-      "strength": 0.002,
-      "slope": 7e-06
+      "strength": 0.003,
+      "slope": 0.000139
     },
     "seasonality": {
-      "detected": false,
-      "period": null,
-      "strength": 0
+      "detected": "True",
+      "period": 7,
+      "strength": 0.159
     },
     "stationarity": {
       "is_stationary": "True",
       "adf_p_value": 0.0,
-      "kpss_p_value": 0.1
+      "kpss_p_value": 0.0576
     }
   },
   "recommendations": [
     "Upward trend detected. Monitor for continued growth.",
+    "Seasonal pattern detected with period 7. Use seasonal models for forecasting.",
     "ARIMA model successfully fitted. Use for short-term forecasting.",
     "Exponential smoothing model available. Good for trend-based forecasting."
   ]

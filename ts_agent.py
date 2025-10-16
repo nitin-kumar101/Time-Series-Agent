@@ -9,7 +9,7 @@ from langgraph.graph import StateGraph, END
 from langchain_groq import ChatGroq
 from langchain_core.messages import HumanMessage, AIMessage, SystemMessage
 from langchain_core.tools import tool
-from langchain.embeddings import HuggingFaceEmbeddings
+from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain_community.vectorstores import Chroma
 from langchain_community.document_loaders import PyPDFLoader, CSVLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
@@ -49,8 +49,11 @@ class HybridChatAgent:
         self.db_dir = db_dir
         os.makedirs(self.db_dir, exist_ok=True)
 
-        # Embeddings and vector store
-        self.embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
+        # Embeddings and vector store (force CPU to avoid meta tensor/device issues)
+        self.embeddings = HuggingFaceEmbeddings(
+            model_name="sentence-transformers/all-MiniLM-L6-v2",
+            model_kwargs={"device": "cpu"}
+        )
         self.vectorstore = Chroma(collection_name="dbc", embedding_function=self.embeddings, persist_directory=os.path.join(self.db_dir, ".chroma"))
         self.retriever = self.vectorstore.as_retriever(search_kwargs={"k": 5})
         
@@ -338,9 +341,32 @@ class HybridChatAgent:
             # attempt to find a CSV path mentioned; fallback to commit_history.csv
             import re
             m = re.search(r"([\w./\\-]+\.csv)", question, re.IGNORECASE)
-            csv_path = m.group(1) if m else os.path.join(self.db_dir, "commit_history.csv") if os.path.exists(os.path.join(self.db_dir, "commit_history.csv")) else "commit_history.csv"
-            if not os.path.exists(csv_path):
-                return f"I couldn't find the CSV file '{csv_path}'. Please provide a valid path."
+            candidate = m.group(1) if m else None
+            csv_path = None
+            if candidate and os.path.exists(candidate):
+                csv_path = candidate
+            elif candidate:
+                # Try resolving inside db directory
+                base = os.path.basename(candidate)
+                inside_db = os.path.join(self.db_dir, base)
+                if os.path.exists(inside_db):
+                    csv_path = inside_db
+            # Fallbacks: db/commit_history.csv, root commit_history.csv, or first CSV in db
+            if csv_path is None:
+                db_commit = os.path.join(self.db_dir, "commit_history.csv")
+                if os.path.exists(db_commit):
+                    csv_path = db_commit
+                elif os.path.exists("commit_history.csv"):
+                    csv_path = "commit_history.csv"
+                else:
+                    # pick first CSV in db if available
+                    if os.path.isdir(self.db_dir):
+                        for f in os.listdir(self.db_dir):
+                            if f.lower().endswith('.csv'):
+                                csv_path = os.path.join(self.db_dir, f)
+                                break
+            if csv_path is None or not os.path.exists(csv_path):
+                return "I couldn't find a CSV to analyze. Please upload a CSV to the db/ folder or provide a valid path."
             analysis = self._analyze_csv_path(csv_path)
             return f"Time series analysis summary for {csv_path}:\n\n{analysis['summary']}\n\nOutputs saved to: {analysis['outputs']}"
         return self._answer_rag(question)

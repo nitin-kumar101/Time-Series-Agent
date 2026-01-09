@@ -25,7 +25,7 @@ from time_series_tools import TimeSeriesAnalyzer, TimeSeriesVisualizer
 from reporting import ReportGenerator, DashboardGenerator
 
 # LLM for RAG generation
-from langchain_groq import ChatGroq
+from langchain_openai import AzureChatOpenAI
 from langchain_core.messages import HumanMessage, SystemMessage
 import os
 
@@ -89,15 +89,23 @@ ts_visualizer = TimeSeriesVisualizer()
 report_generator = ReportGenerator()
 dashboard_generator = DashboardGenerator()
 
-# Initialize LLM for RAG generation (only if API key is available)
+# Initialize LLM for RAG generation (only if Azure OpenAI credentials are available)
 llm = None
 try:
-    if os.getenv("GROQ_API_KEY"):
-        llm = ChatGroq(model="llama-3.1-8b-instant", temperature=0.1)
+    # Azure OpenAI requires: AZURE_OPENAI_API_KEY, AZURE_OPENAI_ENDPOINT, and optionally AZURE_OPENAI_API_VERSION
+    if (os.getenv("AZURE_OPENAI_API_KEY") and
+        os.getenv("AZURE_OPENAI_ENDPOINT")):
+        llm = AzureChatOpenAI(
+            azure_deployment="gpt-35-turbo",  # or your deployment name
+            openai_api_version="2023-12-01-preview",  # or your API version
+            temperature=0.1,
+            max_tokens=1000
+        )
+        print("Azure OpenAI LLM initialized successfully for RAG generation.")
     else:
-        print("Warning: GROQ_API_KEY not set. RAG generation will be disabled.")
+        print("Warning: Azure OpenAI credentials not set (AZURE_OPENAI_API_KEY and AZURE_OPENAI_ENDPOINT required). RAG generation will be disabled.")
 except Exception as e:
-    print(f"Warning: Failed to initialize LLM: {e}. RAG generation will be disabled.")
+    print(f"Warning: Failed to initialize Azure OpenAI LLM: {e}. RAG generation will be disabled.")
 
 #### Tools ####
 
@@ -229,7 +237,7 @@ def search_documents(query: str, top_k: int = 5, generate_answer: bool = False) 
         # Optionally generate an answer using RAG
         if generate_answer and results:
             if llm is None:
-                response["generation_error"] = "LLM not available. Please set GROQ_API_KEY for AI-powered answers."
+                response["generation_error"] = "LLM not available. Please set AZURE_OPENAI_API_KEY and AZURE_OPENAI_ENDPOINT for AI-powered answers."
             else:
                 try:
                     generation_result = generate_rag_answer(query, results)
@@ -354,7 +362,7 @@ def generate_rag_answer(query: str, context_chunks: List[Dict[str, Any]], max_to
             return {"error": "No context chunks provided for generation"}
 
         if llm is None:
-            return {"error": "LLM not available. Please set GROQ_API_KEY environment variable for RAG generation."}
+            return {"error": "LLM not available. Please set AZURE_OPENAI_API_KEY and AZURE_OPENAI_ENDPOINT environment variables for RAG generation."}
 
         # Prepare context from retrieved chunks
         context_text = ""

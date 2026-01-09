@@ -11,10 +11,12 @@ def demo_rag():
     print("RAG Generation Demo")
     print("=" * 50)
 
-    # Check if API key is available
-    if not os.getenv("GROQ_API_KEY"):
-        print("Warning: GROQ_API_KEY not set. Demo will show search-only functionality.")
-        print("Set your API key to see AI-generated answers.\n")
+    # Check if Azure OpenAI credentials are available
+    azure_ready = (os.getenv("AZURE_OPENAI_API_KEY") and
+                   os.getenv("AZURE_OPENAI_ENDPOINT"))
+    if not azure_ready:
+        print("Warning: Azure OpenAI credentials not set. Demo will show search-only functionality.")
+        print("Set AZURE_OPENAI_API_KEY and AZURE_OPENAI_ENDPOINT to see AI-generated answers.\n")
 
     # Mock search results (since we don't have real documents uploaded)
     mock_results = [
@@ -44,7 +46,7 @@ def demo_rag():
         print(f"   Text: {result['text'][:100]}...")
 
     print("\nGenerating AI Answer...")
-    if os.getenv("GROQ_API_KEY"):
+    if azure_ready:
         try:
             answer_result = generate_rag_answer(query, mock_results)
             if "success" in answer_result and answer_result["success"]:
@@ -56,8 +58,9 @@ def demo_rag():
         except Exception as e:
             print(f"\nError: {e}")
     else:
-        print("\nTo see AI-generated answers, set your GROQ_API_KEY environment variable.")
-        print("Example: export GROQ_API_KEY='your-key-here'")
+        print("\nTo see AI-generated answers, set your Azure OpenAI credentials:")
+        print("export AZURE_OPENAI_API_KEY='your-api-key'")
+        print("export AZURE_OPENAI_ENDPOINT='https://your-resource.openai.azure.com/'")
 
     print("\n" + "=" * 50)
     print("Demo completed!")

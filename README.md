@@ -23,12 +23,14 @@ A comprehensive Python application that uses LangGraph and AI agents to automati
 pip install -r requirements.txt
 ```
 
-3. Set up your Groq API key (required for AI document answers):
+3. Set up your Azure OpenAI credentials (required for AI document answers):
 ```bash
-export GROQ_API_KEY='your-api-key-here'
+export AZURE_OPENAI_API_KEY='your-api-key-here'
+export AZURE_OPENAI_ENDPOINT='https://your-resource-name.openai.azure.com/'
+export AZURE_OPENAI_API_VERSION='2023-12-01-preview'  # optional, defaults to this version
 ```
 
-**Note**: The GROQ_API_KEY is required for AI-powered document Q&A. Without it, you can still search documents but won't get generated answers. Get your key from [Groq Console](https://console.groq.com/).
+**Note**: Azure OpenAI credentials are required for AI-powered document Q&A. Without them, you can still search documents but won't get generated answers. Set up your Azure OpenAI resource in the [Azure portal](https://portal.azure.com/).
 
 ## Usage
 
@@ -73,10 +75,10 @@ The chatbot understands natural language commands:
 - *"show me the stats"* → Displays RAG system statistics
 
 **RAG Generation Features:**
-- **AI-Powered Answers**: Uses Groq LLM to generate comprehensive responses
+- **AI-Powered Answers**: Uses Azure OpenAI GPT models to generate comprehensive responses
 - **Source Citations**: Answers include references to source documents
 - **Contextual Understanding**: Synthesizes information from multiple document chunks
-- **Graceful Degradation**: Falls back to raw search results when API key unavailable
+- **Graceful Degradation**: Falls back to raw search results when Azure credentials unavailable
 
 ### Command Line Mode
 ```bash

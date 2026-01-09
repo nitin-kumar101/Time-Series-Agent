@@ -165,11 +165,11 @@ def main():
     st.title("🤖 AI Analysis Chatbot")
     st.markdown("*Time Series Analysis & Document Q&A powered by MCP Server Tools*")
 
-    # Check for API key
+    # Check for Azure OpenAI credentials
     import os
-    if not os.getenv("GROQ_API_KEY"):
-        st.warning("⚠️ **GROQ_API_KEY not set**: AI-powered answer generation for documents will be disabled. Set your API key as an environment variable to enable this feature.")
-        st.info("💡 Get your API key from [Groq Console](https://console.groq.com/)")
+    if not (os.getenv("AZURE_OPENAI_API_KEY") and os.getenv("AZURE_OPENAI_ENDPOINT")):
+        st.warning("⚠️ **Azure OpenAI credentials not set**: AI-powered answer generation for documents will be disabled. Set AZURE_OPENAI_API_KEY and AZURE_OPENAI_ENDPOINT as environment variables to enable this feature.")
+        st.info("💡 Configure your Azure OpenAI resource in the Azure portal and set the environment variables.")
 
     # Initialize chatbot
     if 'chatbot' not in st.session_state:
@@ -274,7 +274,7 @@ def main():
         st.subheader("🔍 Quick Search")
         search_query = st.text_input("Search documents", key="quick_search", placeholder="Ask a question about your documents...")
         generate_answer = st.checkbox("Generate AI answer", value=False, key="generate_checkbox",
-                                    help="Use AI to generate a comprehensive answer based on search results (requires GROQ_API_KEY)")
+                                    help="Use AI to generate a comprehensive answer based on search results (requires Azure OpenAI credentials)")
 
         if st.button("Search", key="quick_search_btn") and search_query:
             with st.spinner(f"Searching for: '{search_query}'{' with AI generation' if generate_answer else ''}"):

@@ -1,23 +1,19 @@
 # Time Series Analysis Agent
 
-
-A comprehensive Python application that uses LangGraph and AI agents to automatically analyze CSV data for time series patterns. The agent intelligently detects data types, performs trend analysis, seasonality detection, and forecasting. Now includes a **Streamlit web interface** for easy interaction!
+A comprehensive Python application that uses LangGraph and AI agents to automatically analyze CSV data for time series patterns. The agent intelligently detects data types, performs trend analysis, seasonality detection, and forecasting.
 
 ## Features
 
 - **🤖 AI-Powered Agent**: Built with LangGraph for intelligent workflow orchestration
-- **🌐 Web Interface**: Beautiful Streamlit UI for chatting, file uploads, and visualization
 - **🔍 Automatic Data Detection**: Automatically identifies time columns, numeric data, and categorical variables
 - **📈 Comprehensive Analysis**: 
   - Trend analysis with moving averages and linear regression
   - Seasonality detection with seasonal decomposition
   - Stationarity testing (ADF and KPSS tests)
   - Forecasting with ARIMA and Exponential Smoothing models
-  - **🔍 Anomaly Detection**: Prophet-based anomaly detection with visualizations
 - **📊 Interactive Visualizations**: Plotly-based charts and dashboards
 - **📋 Detailed Reports**: HTML and JSON reports with analysis summaries
-- **🎯 Multiple Interfaces**: Web UI, command-line, and interactive modes
-- **📁 File Management**: Upload CSV/PDF files for RAG and time series analysis
+- **🎯 Multiple Interfaces**: Command-line and interactive modes
 
 ## Installation
 
@@ -27,32 +23,60 @@ A comprehensive Python application that uses LangGraph and AI agents to automati
 pip install -r requirements.txt
 ```
 
-3. Set up your Groq API key (optional, for enhanced AI features):
+3. Set up your Groq API key (required for AI document answers):
 ```bash
 export GROQ_API_KEY='your-api-key-here'
 ```
 
+**Note**: The GROQ_API_KEY is required for AI-powered document Q&A. Without it, you can still search documents but won't get generated answers. Get your key from [Groq Console](https://console.groq.com/).
+
 ## Usage
-
-### 🌐 Web Interface (Recommended)
-```bash
-# Start the Streamlit web app
-python run_app.py
-
-# Or directly with streamlit
-streamlit run streamlit_app.py
-```
-
-The web interface provides:
-- **💬 Chat Interface**: Ask questions about your data or request time series analysis
-- **📁 File Upload**: Upload CSV/PDF files for analysis and RAG
-- **📊 Live Visualizations**: View interactive plots and anomaly detection charts
-- **⚡ Quick Actions**: One-click analysis of common files
 
 ### Interactive Mode
 ```bash
 python main.py
 ```
+
+### Streamlit Web Interface
+```bash
+# Run the interactive web chatbot interface
+streamlit run streamlit_app.py
+
+# Or use the batch file
+run_ui.bat
+```
+
+The web interface provides:
+- **Chat interface** for natural language interaction with analysis tools
+- **Dual file upload** for both CSV (time series) and PDF (documents) files
+- **Real-time analysis** results and visualizations
+- **Document Q&A** using RAG (Retrieval-Augmented Generation) with AI-powered answers
+- **Report generation** with downloadable HTML/JSON reports
+- **Interactive plots** using Plotly
+- **Document management** with upload, search, and statistics
+
+### Chat Commands Examples
+
+The chatbot understands natural language commands:
+
+**Time Series Analysis:**
+- *"analyze my data"* → Performs comprehensive analysis
+- *"forecast next 6 months"* → Generates 6-period forecast
+- *"detect anomalies"* → Finds outliers in the data
+- *"generate report"* → Creates HTML/JSON analysis reports
+
+**Document Q&A (RAG):**
+- *"search for machine learning"* → Searches uploaded documents
+- *"what is machine learning"* → AI generates comprehensive answers
+- *"explain this concept"* → Contextual explanations from documents
+- *"list my documents"* → Shows all uploaded PDFs
+- *"show me the stats"* → Displays RAG system statistics
+
+**RAG Generation Features:**
+- **AI-Powered Answers**: Uses Groq LLM to generate comprehensive responses
+- **Source Citations**: Answers include references to source documents
+- **Contextual Understanding**: Synthesizes information from multiple document chunks
+- **Graceful Degradation**: Falls back to raw search results when API key unavailable
 
 ### Command Line Mode
 ```bash
@@ -87,14 +111,11 @@ if results["success"]:
 time-series-tool/
 ├── main.py                 # Main application entry point
 ├── ts_agent.py            # LangGraph agent implementation
-├── streamlit_app.py       # Streamlit web interface
-├── run_app.py             # Streamlit launcher script
 ├── data_detector.py       # Automatic data type detection
 ├── time_series_tools.py  # Time series analysis algorithms
 ├── reporting.py           # Report generation and visualization
 ├── requirements.txt       # Python dependencies
-├── commit_history.csv     # Sample data file
-└── db/                    # Directory for uploaded files (PDF, CSV)
+└── commit_history.csv     # Sample data file
 ```
 
 ## How It Works
@@ -142,16 +163,13 @@ The included `commit_history.csv` demonstrates the agent's capabilities:
 
 - **LangGraph**: Agent workflow orchestration
 - **LangChain**: LLM integration and tools
-- **Streamlit**: Web interface framework
 - **Pandas**: Data manipulation and analysis
 - **NumPy**: Numerical computations
 - **Matplotlib/Seaborn**: Static visualizations
 - **Plotly**: Interactive visualizations
 - **Statsmodels**: Statistical models and tests
 - **Scikit-learn**: Machine learning utilities
-- **Prophet**: Advanced forecasting and anomaly detection
-- **ChromaDB**: Vector database for RAG
-- **Sentence Transformers**: Embeddings for document search
+- **Prophet**: Advanced forecasting (optional)
 
 ## Troubleshooting
 

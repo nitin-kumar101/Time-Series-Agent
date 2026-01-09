@@ -3,13 +3,13 @@ langchain==0.3.27
 langchain-groq== 0.3.8
 langchain-community==0.3.31
 pandas==2.3.3
-numpy==2.3.3
+numpy
 matplotlib==3.10.7
 seaborn==0.13.2
 plotly==6.3.1
 scikit-learn==1.7.2
 statsmodels==0.14.2
-prophet==1.1.7
+prophet==1.2.1
 arch==7.2.0
 yfinance==0.2.66
 python-dotenv==1.1.1
@@ -21,3 +21,4 @@ sentence-transformers==5.1.1
 pypdf==6.1.1
 streamlit==1.39.0
 mcp==1.0.0
+pypdf==6.1.1
